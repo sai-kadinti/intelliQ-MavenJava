@@ -2,66 +2,146 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Snake Game</title>
+  <title>2048 Game</title>
   <style>
     body {
-      background: #000;
+      font-family: Arial, sans-serif;
+      background: #faf8ef;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
-    canvas {
-      background: #fff;
-      border: 2px solid #000;
+    #game {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 10px;
+      background: #bbada0;
+      padding: 10px;
+      border-radius: 5px;
     }
+    .tile {
+      width: 80px;
+      height: 80px;
+      background: #cdc1b4;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+    }
+    .tile[data-val="0"] { background: #cdc1b4; color: #cdc1b4; }
+    .tile[data-val="2"] { background: #eee4da; color: #776e65; }
+    .tile[data-val="4"] { background: #ede0c8; color: #776e65; }
+    .tile[data-val="8"] { background: #f2b179; color: #f9f6f2; }
+    .tile[data-val="16"] { background: #f59563; color: #f9f6f2; }
+    .tile[data-val="32"] { background: #f67c5f; color: #f9f6f2; }
+    .tile[data-val="64"] { background: #f65e3b; color: #f9f6f2; }
+    .tile[data-val="128"] { background: #edcf72; color: #f9f6f2; }
+    .tile[data-val="256"] { background: #edcc61; color: #f9f6f2; }
+    .tile[data-val="512"] { background: #edc850; color: #f9f6f2; }
+    .tile[data-val="1024"] { background: #edc53f; color: #f9f6f2; }
+    .tile[data-val="2048"] { background: #edc22e; color: #f9f6f2; }
   </style>
 </head>
 <body>
-  <canvas id="game" width="400" height="400"></canvas>
+  <div id="game"></div>
 
   <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
-    const size = 20;
-    let snake = [{ x: 200, y: 200 }];
-    let food = { x: 100, y: 100 };
-    let dx = size, dy = 0;
+    const size = 4;
+    let board = [];
 
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowUp' && dy === 0) [dx, dy] = [0, -size];
-      else if (e.key === 'ArrowDown' && dy === 0) [dx, dy] = [0, size];
-      else if (e.key === 'ArrowLeft' && dx === 0) [dx, dy] = [-size, 0];
-      else if (e.key === 'ArrowRight' && dx === 0) [dx, dy] = [size, 0];
-    });
-
-    function draw() {
-      ctx.clearRect(0, 0, 400, 400);
-      snake.forEach((s, i) => {
-        ctx.fillStyle = i ? 'lime' : 'green';
-        ctx.fillRect(s.x, s.y, size, size);
-      });
-      ctx.fillStyle = 'red';
-      ctx.fillRect(food.x, food.y, size, size);
-
-      let head = { x: snake[0].x + dx, y: snake[0].y + dy };
-
-      if (head.x === food.x && head.y === food.y) {
-        food = { x: Math.floor(Math.random() * 20) * size, y: Math.floor(Math.random() * 20) * size };
-      } else {
-        snake.pop();
-      }
-
-      if (head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400 || snake.some(s => s.x === head.x && s.y === head.y)) {
-        clearInterval(game);
-        alert('Game Over!');
-      }
-
-      snake.unshift(head);
+    function initBoard() {
+      board = Array(size).fill().map(() => Array(size).fill(0));
+      addTile();
+      addTile();
+      render();
     }
 
-    let game = setInterval(draw, 100);
+    function addTile() {
+      let empty = [];
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (board[r][c] === 0) empty.push([r, c]);
+        }
+      }
+      if (empty.length > 0) {
+        let [r, c] = empty[Math.floor(Math.random() * empty.length)];
+        board[r][c] = Math.random() < 0.9 ? 2 : 4;
+      }
+    }
+
+    function render() {
+      const game = document.getElementById('game');
+      game.innerHTML = '';
+      board.forEach(row => {
+        row.forEach(val => {
+          const tile = document.createElement('div');
+          tile.className = 'tile';
+          tile.textContent = val === 0 ? '' : val;
+          tile.dataset.val = val;
+          game.appendChild(tile);
+        });
+      });
+    }
+
+    function rotateLeft(matrix) {
+      return matrix[0].map((_, i) => matrix.map(row => row[i])).reverse();
+    }
+
+    function rotateRight(matrix) {
+      return matrix[0].map((_, i) => matrix.map(row => row[i]).reverse());
+    }
+
+    function moveLeft() {
+      let moved = false;
+      for (let r = 0; r < size; r++) {
+        let row = board[r].filter(v => v);
+        for (let c = 0; c < row.length - 1; c++) {
+          if (row[c] === row[c + 1]) {
+            row[c] *= 2;
+            row[c + 1] = 0;
+            moved = true;
+          }
+        }
+        row = row.filter(v => v);
+        while (row.length < size) row.push(0);
+        if (board[r].toString() !== row.toString()) moved = true;
+        board[r] = row;
+      }
+      if (moved) {
+        addTile();
+        render();
+      }
+    }
+
+    function moveRight() {
+      board = board.map(row => row.reverse());
+      moveLeft();
+      board = board.map(row => row.reverse());
+    }
+
+    function moveUp() {
+      board = rotateLeft(board);
+      moveLeft();
+      board = rotateRight(board);
+    }
+
+    function moveDown() {
+      board = rotateLeft(board);
+      moveRight();
+      board = rotateRight(board);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') moveLeft();
+      if (e.key === 'ArrowRight') moveRight();
+      if (e.key === 'ArrowUp') moveUp();
+      if (e.key === 'ArrowDown') moveDown();
+    });
+
+    initBoard();
   </script>
 </body>
 </html>
