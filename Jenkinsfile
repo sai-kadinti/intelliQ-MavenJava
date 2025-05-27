@@ -1,57 +1,54 @@
 pipeline
 {
-    agent any
+    agent 
+    {
+        label 'built-in'
+    }
     stages
     {
-        stage('ContinuousDownload')
+        stage ('Continuous-Download')
         {
             steps
             {
-                git 'https://github.com/intelliqittrainings/maven.git'
+                git 'https://github.com/sai-kadinti/intelliQ-MavenJava.git'
             }
         }
-        stage('ContinuousBuild')
+        stage ('Continuous-Build')
         {
             steps
             {
                 sh 'mvn package'
             }
         }
-        stage('ContinuousDeployment')
+        stage ('Continuous-Deployment')
         {
             steps
             {
-               deploy adapters: [tomcat9(credentialsId: 'bfb67f1d-2f4e-430c-bb8d-30584116bd00', path: '', url: 'http://172.31.51.212:9090')], contextPath: 'test1', war: '**/*.war'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'd34255da-6028-4b32-93d3-a47cdefbea39', path: '', url: 'http://172.31.87.13:8080/')], contextPath: 'scm-qa1', war: '**/*.war'
             }
         }
-        stage('ContinuousTesting')
+        stage ('Continuous-Testing')
         {
             steps
             {
-               git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-               sh 'java -jar /home/ubuntu/.jenkins/workspace/DeclarativePipeline1/testing.jar'
+                git 'https://github.com/sai-kadinti/FunctionalTesting.git'
+                sh 'java -jar /var/lib/jenkins/workspace/DeclarativeSCM/testing.jar'
             }
         }
-       
-    }
-    
-    post
-    {
-        success
+        stage ('Continuous-Delivery')
         {
-            input message: 'Need approval from the DM!', submitter: 'srinivas'
-               deploy adapters: [tomcat9(credentialsId: 'bfb67f1d-2f4e-430c-bb8d-30584116bd00', path: '', url: 'http://172.31.50.204:9090')], contextPath: 'prod1', war: '**/*.war'
+            steps
+            {
+                input message: 'Please approve the deployment', submitter: 'Manager'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'd34255da-6028-4b32-93d3-a47cdefbea39', path: '', url: 'http://172.31.92.132:8080/')], contextPath: 'scm-prod1', war: '**/*.war'
+            }
         }
-        failure
+        stage ('Post-Build')
         {
-            mail bcc: '', body: 'Continuous Integration has failed', cc: '', from: '', replyTo: '', subject: 'CI Failed', to: 'selenium.saikrishna@gmail.com'
+            steps
+            {
+                echo "Deployment succeeded access the link http://3.93.232.4:8080/scm/"
+            }
         }
-       
     }
-    
-    
-    
-    
-    
-    
 }
