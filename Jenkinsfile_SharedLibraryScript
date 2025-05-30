@@ -1,0 +1,57 @@
+{
+    agent any
+    stages
+    {
+        stage ('Cont-Donwload')
+        {
+            steps
+            {
+                script
+                {
+                    ops.cdown('intelliQ-MavenJava')
+                }
+            }
+        }
+        stage ('Cont-Build')
+        {
+            steps
+            {
+                script
+                {
+                    ops.cbuild("package")
+                }
+            }
+        }
+        stage ("Cont-Deployment")
+        {
+            steps
+            {
+                script
+                {
+                    ops.cdeploy("SharedLibraries", "172.31.87.13", "SL2")
+                }
+            }
+        }
+        stage ('Cont-Testing')
+        {
+            steps
+            {
+                script
+                {
+                    ops.cdown("FunctionalTesting")
+                    ops.ctest("SharedLibraries")
+                }
+            }
+        }
+        stage ('Cont-Delivery')
+        {
+            steps
+            {
+                script
+                {
+                    ops.cdeploy("SharedLibraries", "172.31.92.132", "SLP")
+                }
+            }
+        }
+    }
+}
