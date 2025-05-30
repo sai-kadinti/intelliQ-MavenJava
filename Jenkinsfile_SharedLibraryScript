@@ -1,4 +1,4 @@
-@@Library('func')_
+@Library('func')_
 pipeline
 {
     agent any
