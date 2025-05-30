@@ -1,3 +1,5 @@
+@Library('func')_
+pipeline
 {
     agent any
     stages
@@ -28,7 +30,7 @@
             {
                 script
                 {
-                    ops.cdeploy("SharedLibraries", "172.31.87.13", "SL2")
+                    ops.cdeploy("SharedLibraries", "172.31.87.13", "SL2SCM")
                 }
             }
         }
@@ -49,7 +51,7 @@
             {
                 script
                 {
-                    ops.cdeploy("SharedLibraries", "172.31.92.132", "SLP")
+                    ops.cdeploy("SharedLibraries", "172.31.92.132", "SLPSCP")
                 }
             }
         }
