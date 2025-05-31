@@ -1,59 +1,16 @@
-@Library('func')_
+@@Library('func')_
 pipeline
 {
-    agent any
-    stages
+  agent any
+  stages
+  {
+    stage ('echo')
     {
-        stage ('Cont-Donwload')
-        {
-            steps
-            {
-                script
-                {
-                    ops.cdown('intelliQ-MavenJava')
-                }
-            }
-        }
-        stage ('Cont-Build')
-        {
-            steps
-            {
-                script
-                {
-                    ops.cbuild("package")
-                }
-            }
-        }
-        stage ("Cont-Deployment")
-        {
-            steps
-            {
-                script
-                {
-                    ops.cdeploy("SharedLibraries", "172.31.87.13", "SL2SCM")
-                }
-            }
-        }
-        stage ('Cont-Testing')
-        {
-            steps
-            {
-                script
-                {
-                    ops.cdown("FunctionalTesting")
-                    ops.ctest("SharedLibraries")
-                }
-            }
-        }
-        stage ('Cont-Delivery')
-        {
-            steps
-            {
-                script
-                {
-                    ops.cdeploy("SharedLibraries", "172.31.92.132", "SLPSCP")
-                }
-            }
-        }
-    }
+      steps
+      {
+        sh 'echo "this is in loans branch"'
+       }
+     }
+  }
 }
+
