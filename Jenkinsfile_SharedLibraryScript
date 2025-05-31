@@ -30,7 +30,7 @@ pipeline
             {
                 script
                 {
-                    ops.cdeploy("SharedLibraries", "172.31.87.13", "SL2SCM")
+                    ops.cdeploy("MultiBranch", "172.31.87.13", "MB")
                 }
             }
         }
@@ -41,7 +41,7 @@ pipeline
                 script
                 {
                     ops.cdown("FunctionalTesting")
-                    ops.ctest("SharedLibraries")
+                    ops.ctest("MultiBranch")
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline
             {
                 script
                 {
-                    ops.cdeploy("SharedLibraries", "172.31.92.132", "SLPSCP")
+                    ops.cdeploy("MultiBranch", "172.31.92.132", "MBP")
                 }
             }
         }
