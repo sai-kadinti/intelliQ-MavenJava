@@ -30,7 +30,7 @@ pipeline
             {
                 script
                 {
-                    ops.cdeploy("MultiBranch_master", "172.31.87.13", "MB")
+                    ops.cdeploy("MultiBranch_master", "172.31.87.13", "MB1")
                 }
             }
         }
@@ -51,7 +51,7 @@ pipeline
             {
                 script
                 {
-                    ops.cdeploy("MultiBranch_master", "172.31.92.132", "MBP")
+                    ops.cdeploy("MultiBranch_master", "172.31.92.132", "MBP1")
                 }
             }
         }
