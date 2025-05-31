@@ -4,11 +4,11 @@ pipeline
   agent any
   stages
   {
-    stage ('echo')
+    stage ('sum')
     {
       steps
       {
-        sh 'echo "this is in loans branch"'
+        ops.sum(12,10)
        }
      }
   }
