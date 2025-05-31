@@ -1,16 +1,18 @@
 @Library('func')_
 pipeline
 {
-  agent any
-  stages
-  {
-    stage ('sum')
+    agent any
+    stages
     {
-      steps
-      {
-        ops.sum(12,10)
-       }
-     }
-  }
+        stage ('Sum')
+        {
+            steps
+            {
+                script
+                {
+                    ops.sum(10,17)
+                }
+            }
+        }
+    }
 }
-
