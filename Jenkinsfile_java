@@ -18,7 +18,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Downloading the Source code X---------------'
-                git '${git_repo}'
+                git "${git_repo}"
                 sh 'ls -lrth'
                 sh 'pwd'
             }
