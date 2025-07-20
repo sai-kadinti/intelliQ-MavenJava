@@ -3,12 +3,13 @@ pipeline
     agent any
     environment
     {
+        git_repo = 'https://github.com/sai-kadinti/intelliQ-MavenJava.git'
         public_ip_of_jenkins_server = 'http://52.91.35.192'
         sonarqube_server_ip_address = 'http://52.91.35.192:9000/'
         sonarqube_token = 'sqa_6c95e14685ebe41e101be7dd8480b48cec3480ca'
         QA_server_ip_address = 'http://3.87.68.54:9090/'
         context_path = 'test'
-        response_port_for_container ='7070'
+        response_port_for_container ='70700'
     }
     stages 
     {
@@ -17,7 +18,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Downloading the Source code X---------------'
-                git 'https://github.com/sai-kadinti/intelliQ-MavenJava.git'
+                git '${git_repo}'
                 sh 'ls -lrth'
                 sh 'pwd'
             }
