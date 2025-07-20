@@ -47,7 +47,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Deploying the war file X---------------'
-                deploy adapters: [tomcat9(credentialsId: '0c8a3398-6cf4-4e78-8471-1ac26211bba0', path: '', url: '${QA_server_ip_address}')], contextPath: '${context_path}', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: '0c8a3398-6cf4-4e78-8471-1ac26211bba0', path: '', url: "${QA_server_ip_address}")], contextPath: "${context_path}", war: '**/*.war'
             }
         }
 
