@@ -49,7 +49,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Building the war file X---------------'
-                sh 'sudo cp /var/lib/jenkins/workspace/P1/webapp/target/webapp.war /var/lib/jenkins/workspace/P1/'
+                sh 'sudo cp /var/lib/jenkins/workspace/${JOB_NAME}/webapp/target/webapp.war /var/lib/jenkins/workspace/${JOB_NAME}/'
             }
         }
         
@@ -58,7 +58,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Building the docker image code X---------------'
-                sh 'docker build -f /var/lib/jenkins/workspace/P1//Dockerfile -t kadintisai/java-app:${BUILD_NUMBER} .'
+                sh 'docker build -f /var/lib/jenkins/workspace/${JOB_NAME}//Dockerfile -t kadintisai/java-app:${BUILD_NUMBER} .'
             }
         }
 
