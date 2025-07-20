@@ -1,7 +1,14 @@
 pipeline 
 {
     agent any
-
+    environment
+    {
+        sonarqube_server_ip_address = 'http://52.91.35.192:9000/'
+        sonarqube_token = 'sqa_6c95e14685ebe41e101be7dd8480b48cec3480ca'
+        QA_server_ip_address = 'http://3.87.68.54:9090/'
+        context_path = 'test'
+        response_port_for_container ='9090'
+    }
     stages 
     {
         stage('Donnload the Source code') 
@@ -22,8 +29,8 @@ pipeline
                 echo '--------------------X Scanning the Source code X---------------'
                 sh 'ls -lrth'
                 sh ''' mvn sonar:sonar \\
-                        -Dsonar.host.url=http://52.91.35.192:9000/ \\
-                        -Dsonar.login=sqa_6c95e14685ebe41e101be7dd8480b48cec3480ca'''
+                        -Dsonar.host.url=${sonarqube_server_ip_address} \\
+                        -Dsonar.login=${sonarqube_token}'''
             }
         }
         stage('Build the Source code') 
@@ -40,7 +47,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Deploying the war file X---------------'
-                deploy adapters: [tomcat9(credentialsId: '0c8a3398-6cf4-4e78-8471-1ac26211bba0', path: '', url: 'http://3.87.68.54:9090/')], contextPath: 'qa1', war: '**/*.war'
+                deploy adapters: [tomcat9(credentialsId: '0c8a3398-6cf4-4e78-8471-1ac26211bba0', path: '', url: '${QA_server_ip_address}')], contextPath: '${context_path}', war: '**/*.war'
             }
         }
 
@@ -80,8 +87,7 @@ pipeline
             steps 
             {
                 echo '--------------------X Building the docker image code X---------------'
-                sh 'docker rm -f javaapp'
-                sh 'docker run --name javaapp -p 9999:8080 -d kadintisai/java-app:${BUILD_NUMBER}'
+                sh 'docker run --name javaapp_${BUILD_NUMBER} -p ${response_port_for_container}:8080 -d kadintisai/java-app:${BUILD_NUMBER}'
             }
         }
         
