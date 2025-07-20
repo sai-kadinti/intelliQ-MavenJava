@@ -8,8 +8,8 @@ pipeline
         sonarqube_server_ip_address = 'http://52.91.35.192:9000/'
         sonarqube_token = 'sqa_0e39139930670693f7b32d2a98d7569bfea3e432'
         QA_server_ip_address = 'http://3.87.68.54:9090/'
-        context_path = 'test'
-        response_port_for_container ='7777'
+        context_path = 'stage'
+        response_port_for_container ='9999'
     }
     stages 
     {
